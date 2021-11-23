@@ -25,6 +25,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('consultant', function($user){
+            return ($user->userType->name == 'consultant') ? true : false;
+        });
     }
 }

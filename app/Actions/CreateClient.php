@@ -7,9 +7,8 @@ use App\Models\Client;
 
 class CreateClient
 {
-    public function store($request)
+    public function store($request, $consultant)
     {
-        $consultant = auth()->user();
         $password = uniqid();
         $client = Client::create([
             'consultant_id' => $consultant->id,
@@ -33,7 +32,7 @@ class CreateClient
     private function storeDirector($client, $request)
     {
         foreach ($request->directors as $director) {
-            $client->director()->create([
+            $client->directors()->create([
                 'consultant_id' => $client->consultant_id,
                 'client_id' => $client->client_id,
                 'name' => $director['name'],
@@ -46,7 +45,7 @@ class CreateClient
     private function storeSubsidiary($client, $request)
     {
         foreach ($request->subsidiaries as $subsidiary) {
-            $client->subsidiary()->create([
+            $client->subsidiaries()->create([
                 'consultant_id' => $client->consultant_id,
                 'client_id' => $client->client_id,
                 'name' => $subsidiary['name'],

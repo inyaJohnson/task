@@ -62,13 +62,16 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-
     public function userType(){
-        return $this->hasOne(UserType::class);
+        return $this->belongsTo(UserType::class);
     }
 
     public function fullName(): string
     {
         return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function clients(){
+        return $this->hasMany(Client::class, 'consultant_id');
     }
 }

@@ -16,6 +16,12 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    // public function __construct()
+    // {
+    //     $this->middleware('consultant')->only('store');
+    // }
+
     public function index()
     {
         $clients = Client::where('consultant_id', auth()->user()->id)->get();
@@ -30,8 +36,14 @@ class ClientController extends Controller
      */
     public function store(ClientRequest $request, CreateClient $createClient)
     {
-        $client = $createClient->store($request);
-        return response()->success(Response::HTTP_CREATED, 'Client created successfully', ['client' => $client]);
+        $consultant = auth()->user();
+        if($consultant->userType->name == 'company' && $consultant->clients->count() > 0){
+            $response = response()->error(Response::HTTP_NOT_ACCEPTABLE, 'Company is not allow to have clients');
+        }else{
+            $client = $createClient->store($request, $consultant);
+            $response = response()->success(Response::HTTP_CREATED, 'Client created successfully', ['client' => $client]);
+        }
+        return $response;
     }
 
     /**
