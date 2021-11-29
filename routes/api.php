@@ -12,6 +12,8 @@ use App\Http\Controllers\ClientAuth\LogoutController as ClientLogout;
 use App\Http\Controllers\ClientAuth\ForgotPasswordController as ClientForgotPassword;
 use App\Http\Controllers\ClientAuth\ResetPasswordController as ClientResetPassword;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ConsultantMessageController;
+use App\Http\Controllers\ClientMessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,8 +41,15 @@ Route::group(['prefix' => 'auth'], function ($router) {
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
+
+    // Messages
+    Route::get('clients/{client_id}/messages', [ConsultantMessageController::class, 'index']);
+    Route::post('clients/{client_id}/messages', [ConsultantMessageController::class, 'store']);
+    Route::get('clients/{client_id}/messages/{message_id}', [ConsultantMessageController::class, 'show']);
+
     // Client
     Route::resource('clients', ClientController::class);
+
 });
 
 Route::group(['prefix' => 'client-auth'], function ($router) {
@@ -56,3 +65,10 @@ Route::group(['prefix' => 'client-auth'], function ($router) {
         Route::patch('reset-password', ClientResetPassword::class);
     });
 });
+
+
+Route::group(['middleware' => 'auth:client'], function () {
+    // Messages
+    Route::resource('messages', ClientMessageController::class);
+});
+

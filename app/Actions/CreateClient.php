@@ -12,7 +12,7 @@ class CreateClient
         $password = uniqid();
         $client = Client::create([
             'consultant_id' => $consultant->id,
-            'password' => $password,
+            'password' => bcrypt($password),
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
